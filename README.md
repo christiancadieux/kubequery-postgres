@@ -55,7 +55,7 @@ The loader has access to a dictionary that describes the clusters being monitore
 It is also possible to add extra fields that are not included in the sqlite schema but are include in the postgres schema.
 These fields are application-specific and can be customized.
 
-For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the postgres tables can be denormalized and these columns added after their parent. 
+For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the postgres tables can be denormalized and these columns added after their parent column. 
 
 Example:
 ``` 
