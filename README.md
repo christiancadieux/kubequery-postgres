@@ -54,7 +54,7 @@ echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs
 The loader has access to a dictionary that describes extra fields to the postgres tables. 
 These fields are application-specific and can be customized.
 
-For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the tables can be denormalized and these columns added after their parent. 
+For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the tables can be denormalized and these columns added after their parent column. 
 
 Example:
 ``` 
