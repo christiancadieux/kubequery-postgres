@@ -49,7 +49,7 @@ echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs
 
 ```
 
-## Additional fields : In Progress
+## Additional fields (in progress)
 
 The loader has access to a dictionary that describes the clusters being monitored and the tables being accessed. 
 It is also possible to add extra fields that are not included in the sqlite schema but are include in the postgres schema.
