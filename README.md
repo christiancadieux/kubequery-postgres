@@ -22,7 +22,7 @@ Benefits:
 - Index can be added to the PG database for improved access time. 
 - Polling the clusters and saving the results in the database is fast and can be done every 10 minutes if needed. Clusters can be polled in parallel for improved speed. 
 - On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The postgres tables are not virtual and can optimized to solve this problem.
-- Making queries against multiple clusters is easy since all the data is in a single database.
+
 - Only the basic "select * from kubernetes_.." queries are executed on the target clusters. All complex queries (JOINS, multi-cluster) are done on the postgres database.
 - For speed, the postgres database should be located on the aggregator cluster.
 
