@@ -21,7 +21,7 @@ Benefits:
 - Allows to make almost real-time queries against hundreds of clusters since all the data is in the same postgres database.
 - Index can be added to the PG database for improved access time. 
 - Polling the clusters and saving the results in the database is fast and can be done every 10 minutes if needed. Clusters can be polled in parallel for improved speed. 
-- On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The postgres tables are not virtual and can include indexes to solve this problem.
+- On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The postgres tables are not virtual and can optimized to solve this problem.
 - Making queries against multiple clusters is easy since all the data is in a single database.
 - Only the basic "select * from kubernetes_.." queries are executed on the target clusters. All complex queries (JOINS, multi-cluster) are done on the postgres database.
 - For speed, the postgres database should be located on the aggregator cluster.
@@ -51,10 +51,10 @@ echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs
 
 ## Additional fields
 
-The loader has access to a dictionary that describes extra fields to the postgres tables. 
+The loader has access to a dictionary that describes extra fields in the postgres tables. 
 These fields are application-specific and can be customized.
 
-For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the tables can be denormalized and these columns added after their parent. 
+For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the postgres tables can be denormalized and these columns added after their parent. 
 
 Example:
 ``` 
@@ -113,6 +113,47 @@ Time: 314.390 ms
 
 Time: 230.233 ms
  
+```
+
+
+## Sample Loader Run
+
+``
+# concurrency =5
+$ /loader -c 5 
+
+4 Cluster START testcluster-01 - https://testcluster-01:6443 
+1 Cluster START testcluster2-01 - https://testcluster2-01:6443 
+2 Cluster START testcluster3-01 - https://testcluster3-01:6443 
+3 Cluster START testcluster5-01 - https://testcluster5-01:6443 
+0 Cluster START testcluster6-01 - https://testcluster-02:6443 
+------------------------------------------------------------------------------
+2 Cluster REPORT testcluster3-01 - https://testcluster3-01:6443 
+------------------------------------------------------------------------------
+  testcluster3-01 kubernetes_namespaces TABLE
+  testcluster3-01 kubernetes_namespaces Rows=19, Duration=1.05929269s
+  testcluster3-01 kubernetes_nodes TABLE
+  testcluster3-01 kubernetes_nodes Rows=6, Duration=976.341347ms
+  testcluster3-01 kubernetes_pods TABLE
+  testcluster3-01 kubernetes_pods Rows=204, Duration=1.688286795s
+  testcluster3-01 kubernetes_pod_containers TABLE
+  testcluster3-01 kubernetes_pod_containers Rows=274, Duration=1.883914113s
+
+5 Cluster START testcluster5 - https://testcluster5:6443 
+------------------------------------------------------------------------------
+4 Cluster REPORT testcluster-01 - https://testcluster-01:6443 
+------------------------------------------------------------------------------
+  testcluster-01 kubernetes_namespaces TABLE
+  testcluster-01 kubernetes_namespaces Rows=33, Duration=894.902131ms
+  testcluster-01 kubernetes_nodes TABLE
+  testcluster-01 kubernetes_nodes Rows=60, Duration=970.209593ms
+  testcluster-01 kubernetes_pods TABLE
+  testcluster-01 kubernetes_pods Rows=647, Duration=2.524690614s
+  testcluster-01 kubernetes_pod_containers TABLE
+  testcluster-01 kubernetes_pod_containers Rows=953, Duration=3.389727493s
+
+...
+
 ```
 
 
