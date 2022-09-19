@@ -231,7 +231,15 @@ func processData(db *sql.DB, cluster *Cluster, tableFields map[string]string, fi
 					if len(row[field].(string)) > 30000 {
 						out += fmt.Sprintln("  LARGE STRING", field, len(row[field].(string)))
 					}
-					args = append(args, row[field].(string))
+					if field == "labels" {
+						if row[field].(string) == "" {
+							args = append(args, "{}")
+						} else {
+							args = append(args, row[field].(string))
+						}
+					} else {
+						args = append(args, row[field].(string))
+					}
 				}
 			}
 		}
