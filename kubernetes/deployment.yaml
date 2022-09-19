@@ -137,6 +137,12 @@ spec:
       - name: kubequery
         image: kubequery-postgres:2
         imagePullPolicy: Always
+        command: ["/loop"]
+        env:
+          - name: SLEEP
+            value: "3600"
+          - name: CONCURRENT
+            value: "5"
         resources:
           limits:
             cpu: "3"
