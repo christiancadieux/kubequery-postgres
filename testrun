@@ -1,0 +1,8 @@
+export KQ_ROOT=.
+export PG_USER=user
+export PG_PASS='pass'
+export PG_DB="db"
+export PG_HOST="ip"
+export PG_PORT=5434
+
+./loader
