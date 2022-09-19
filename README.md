@@ -1,4 +1,4 @@
-# kubequery-postgres
+# kubequery Aggregator using Postgres
 centralized kubequery postgres database.
 
 ## Architecture
