@@ -95,7 +95,7 @@ Note: The strings have been obfuscated. Query time is ~300ms.
 Time: 314.390 ms
 
 
-# MOST POPULAR IMAGES
+# MOST POPULAR CONTAINER IMAGES
 => select c.image, count(*) pod_cnt from kubernetes_pod_containers c group by c.image order by count(*) desc limit 10;
                             image                             | pod_cnt
 --------------------------------------------------------------+--------
