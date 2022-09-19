@@ -1,31 +1,31 @@
 # kubequery Aggregator using Postgres
-centralized kubequery information in postgres database.
+centralized kubequery information in Postgres database.
 
 ## Architecture
 
 ![kubequery](https://user-images.githubusercontent.com/10535265/191093727-a8a16f20-e7da-4b90-ac70-16cd8d67d2d4.png)
 
 Create a centralized 'loader' that polls a collection of kubernetes clusters using kubequery and store all results in a single
-postgres database using the same schema as kubequery. 
+Postgres database using the same schema as kubequery. 
 
 
 ## Features
 
-Kubequery is normally installed on specific clusters and is used to make 'live' queries against the local kubernetes resources of that cluster using SQL.
+Kubequery is normally installed on specific clusters and used to make 'live' queries against the local kubernetes resources of that cluster using SQL.
 This is a different approach where this software and kubequery is installed on only one cluster(the aggregator) and polls other clusters(the targets) 
-using kubequery remote-access and save the data in a postgres database. 
+using kubequery remote-access and save the data in a Postgres database. 
 
 Benefits:
 
-- Allows to store kube resources from hundreds of clusters in a single postgres database.
-- Allows to make almost real-time queries against hundreds of clusters since all the data is in the same postgres database.
+- Allows to store kube resources from hundreds of clusters in a single Postgres database.
+- Allows to make almost real-time queries against hundreds of clusters since all the data is in the same Postgres database.
 - Index can be added to the PG database for improved access time. 
 - Polling the clusters and saving the results in the database is fast and can be done every 10 minutes if needed. Clusters can be polled in parallel for improved speed. 
-- On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The postgres tables are not virtual and can optimized to solve this problem.
-- Some of the kubequery schema columns like labels and annotations are TEXT but contain json information. These columns can be converted to postgres JSONB for easy access.
+- On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The Postgres tables are not virtual and can optimized to solve this problem.
+- Some of the kubequery schema columns like labels and annotations are TEXT but contain json information. These columns can be converted to Postgres JSONB for easy access.
 
-- Only the basic "select * from kubernetes_.." queries are executed by kubequery on the target clusters. All complex queries (JOINS, multi-cluster) are done on the postgres database.
-- Note: For speed, the postgres database should be located on the aggregator cluster.
+- Only the basic "select * from kubernetes_.." queries are executed by kubequery on the target clusters. All complex queries (JOINS, multi-cluster) are done on the Postgres database.
+- Note: For speed, the Postgres database should be located on the aggregator cluster.
 
 
 ## Kubequery changes
@@ -53,10 +53,10 @@ echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs
 ## Additional fields (in progress)
 
 The loader has access to a dictionary that describes the clusters being monitored and the tables being accessed. 
-It is also possible to add extra fields that are not included in the sqlite schema but are include in the postgres schema.
+It is also possible to add extra fields that are not included in the sqlite schema but are include in the Postgres schema.
 These fields are application-specific and can be customized.
 
-For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the postgres tables can be denormalized and these columns added after their parent column. 
+For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the Postgres tables can be denormalized and these columns added after their parent column. 
 
 Example:
 ``` 
@@ -66,7 +66,7 @@ Example:
 
 # Postgres schema:
   cluster_name varchar(256),
-  region varchar(256),         <<< this field in added in the postgres schema and included by the loader.
+  region varchar(256),         <<< this field in added in the Postgres schema and included by the loader.
   cluster_id varchar(256)
 ```
 
