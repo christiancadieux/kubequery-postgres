@@ -1,0 +1,11 @@
+#!/usr/bin/sh
+
+TABLE=$1
+export KQ_TOKEN=$2
+export KQ_ADDR=$3
+export KQ_CLUSTER_NAME=$4
+export KQ_CLUSTER_UID=$5
+export CLUSTER_IX=$6
+
+echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs/etc/kubequery.flags  --config_path=/opt/uptycs/etc/kubequery.conf --extensions_socket=/opt/uptycs/var/kubequeryi.em$TABLE.$CLUSTER_IX  --extensions_autoload=/opt/uptycs/etc/autoload.exts  --extensions_require=kubequery  --extension_event_tables=kubernetes_events  --disable_database  --json  --disable_events=false  -S > /tmp/${KQ_CLUSTER_NAME}-$TABLE.json
+    

@@ -1,0 +1,22 @@
+#!/usr/bin/sh
+
+
+if [ -d /opt/uptycs/config ]; then
+  cp /opt/uptycs/config/* /opt/uptycs/etc/
+fi
+
+
+sleep=${SLEEP_SEC:-1800}
+CONCURRENT=${CONCURRENT:-5}
+
+echo "Running Loader sleep=$sleep , threads=$CONCURRENT"
+
+while test 1=1; do
+  date
+  /loader -c $CONCURRENT
+  date
+
+  echo "Sleeping $sleep secs"
+  sleep $sleep
+
+done

@@ -1,0 +1,18 @@
+
+{
+  "clusters": [
+    { "name" : "cluster1", "address": "https://testcluster-01:6443", "token": "...", "id" : "id1" },
+    { "name" : "cluster2", "address": "https://testcluster-02:6443", "token": "...", "id" : "id2" }
+   ],
+
+   "tables": [
+    { "name": "kubernetes_namespaces" },
+    { "name": "kubernetes_nodes" },
+    { "name": "kubernetes_pods" },
+    { "name": "kubernetes_pod_containers"},
+    { "name": "kubernetes_daemon_sets"},
+    { "name": "kubernetes_deployments"},
+    { "name": "kubernetes_config_maps"}
+   ]
+}
+      

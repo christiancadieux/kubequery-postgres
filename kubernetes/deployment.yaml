@@ -1,0 +1,153 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-kubequery-serviceaccount
+  namespace: kubequery
+  labels:
+    app.kubernetes.io/name: my-kubequery-serviceaccount
+    helm.sh/chart: kubequery-1.1.1
+    app.kubernetes.io/instance: my-kubequery
+    app.kubernetes.io/version: "1.1.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubequery
+---
+# Source: kubequery/templates/configmap.yaml
+# Copyright (c) 2020-present, The kubequery authors
+#
+# This source code is licensed as defined by the LICENSE file found in the
+# root directory of this source tree.
+#
+# SPDX-License-Identifier: (Apache-2.0 OR GPL-2.0-only)
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-kubequery-configmap
+  namespace: kubequery
+  labels:
+    app.kubernetes.io/name: my-kubequery-configmap
+    helm.sh/chart: kubequery-1.1.1
+    app.kubernetes.io/instance: my-kubequery
+    app.kubernetes.io/version: "1.1.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubequery
+data:
+  enroll.secret: |-
+    TODO
+  kubequery.conf: |-
+    {
+      "schedule": {
+        "kubernetes_namespaces": {
+          "query": "SELECT * FROM kubernetes_namespaces",
+          "interval": 36000
+        }
+      },
+      "options":{
+      }
+    }
+  kubequery.flags: |-
+    --schedule_splay_percent=50
+---
+# Source: kubequery/templates/clusterrole.yaml
+# Copyright (c) 2020-present, The kubequery authors
+#
+# This source code is licensed as defined by the LICENSE file found in the
+# root directory of this source tree.
+#
+# SPDX-License-Identifier: (Apache-2.0 OR GPL-2.0-only)
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: my-kubequery-clusterrole
+  labels:
+    app.kubernetes.io/name: my-kubequery-clusterrole
+    helm.sh/chart: kubequery-1.1.1
+    app.kubernetes.io/instance: my-kubequery
+    app.kubernetes.io/version: "1.1.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubequery
+rules:
+- apiGroups: ["", "admissionregistration.k8s.io", "apps", "autoscaling", "batch", "events.k8s.io", "networking.k8s.io", "policy", "rbac.authorization.k8s.io", "storage.k8s.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+---
+# Source: kubequery/templates/clusterrolebinding.yaml
+# Copyright (c) 2020-present, The kubequery authors
+#
+# This source code is licensed as defined by the LICENSE file found in the
+# root directory of this source tree.
+#
+# SPDX-License-Identifier: (Apache-2.0 OR GPL-2.0-only)
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-kubequery-clusterrolebinding
+  labels:
+    app.kubernetes.io/name: my-kubequery-clusterrolebinding
+    helm.sh/chart: kubequery-1.1.1
+    app.kubernetes.io/instance: my-kubequery
+    app.kubernetes.io/version: "1.1.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubequery
+roleRef:
+  kind: ClusterRole
+  name: my-kubequery-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: my-kubequery-serviceaccount
+  namespace: kubequery
+---
+# Source: kubequery/templates/deployment.yaml
+# Copyright (c) 2020-present, The kubequery authors
+#
+# This source code is licensed as defined by the LICENSE file found in the
+# root directory of this source tree.
+#
+# SPDX-License-Identifier: (Apache-2.0 OR GPL-2.0-only)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubequery-server
+  labels:
+    app: kubequery-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubequery-server
+  template:
+    metadata:
+      labels:
+        app: kubequery-server
+    spec:
+      hostname: aggregator
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: my-kubequery-serviceaccount
+      containers:
+      - name: kubequery
+        image: kubequery-postgres:2
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "3"
+            memory: 2Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - name: config
+          mountPath: /opt/uptycs/config
+      volumes:
+      - name: config
+        configMap:
+          name: my-kubequery-configmap
