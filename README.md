@@ -65,7 +65,7 @@ Example:
 
 ## Example queries
 
-Note: The strings have been obfuscated.
+Note: The strings have been obfuscated. Query time is ~300ms.
 
 ```
 # PODS BY REGIONS
