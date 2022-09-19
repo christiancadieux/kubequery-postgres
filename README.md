@@ -24,7 +24,7 @@ Benefits:
 - On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The postgres tables are not virtual and can optimized to solve this problem.
 
 - Only the basic "select * from kubernetes_.." queries are executed by kubequery on the target clusters. All complex queries (JOINS, multi-cluster) are done on the postgres database.
-- For speed, the postgres database should be located on the aggregator cluster.
+- Note: For speed, the postgres database should be located on the aggregator cluster.
 
 
 ## Kubequery changes
