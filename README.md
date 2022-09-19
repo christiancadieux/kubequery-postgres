@@ -48,7 +48,7 @@ echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs
 The loader has access to a dictionary that describes the changes that are needed to converts from  sqlite to postgres. 
 This dictionary also allows to add extra fields to the postres tables. These fields are application-specific and can be customized.
 
-For example, in Comcast-RDEI, the clusters are organized in 'regions' and the namespaces are organized in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the tables can be denormalized and these columns can be added after their parent. 
+For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the tables can be denormalized and these columns can be added after their parent. 
 
 Example:
 ``` 
