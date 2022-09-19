@@ -8,5 +8,7 @@ image: FORCE
 loader: FORCE
 	go build -o loader ./cmd/...
 
+testrun: FORCE
+	./testrun
 
 FORCE:	;
