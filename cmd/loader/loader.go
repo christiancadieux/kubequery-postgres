@@ -32,10 +32,6 @@ func getPg() string {
 
 func getRoot() string {
 	path := os.Getenv("KQ_ROOT")
-	if path == "" {
-		// running in container
-		return "/"
-	}
 	return path + "/"
 }
 
@@ -69,17 +65,14 @@ func main() {
 		log.Fatalf("NewProcessor error - %v", err)
 	}
 
-	tableFields := map[string]string{}
-	fieldTypes := map[string]string{}
-
-	err = dictio.ParseSchema(tableFields, fieldTypes, getRoot() + "schema.sql")
+	err = dictio.ParseSchema(getRoot() + "schema.sql")
 	if err != nil {
 		log.Fatalf("ParseSchema error - %v", err)
 	}
 
 	time.Sleep(2 * time.Second)
 
-	processor.Run(tableFields, fieldTypes)
+	processor.Run()
 
 
 	fmt.Printf("Done. Duration=%v \n", time.Since(starttime))

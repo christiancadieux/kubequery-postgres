@@ -33,7 +33,7 @@ func NewProcessor(db *sql.DB, dictio *dict.Dictionary, root string, concurrency 
 	}, nil
 }
 
-func (proc *Processor) Run(tableFields map[string]string, fieldTypes map[string]string) error {
+func (proc *Processor) Run() error {
 
 	workers := make(chan struct{}, proc.concurrency)
 
@@ -46,7 +46,7 @@ func (proc *Processor) Run(tableFields map[string]string, fieldTypes map[string]
 			}()
 			fmt.Printf("%d Cluster START %s - %s \n", ix, cluster.FacName, cluster.Address)
 
-			err, out1 := proc.ProcessCluster(cluster, proc.dictio.Tables, tableFields, fieldTypes, ix)
+			err, out1 := proc.ProcessCluster(cluster, proc.dictio.Tables, proc.dictio.TableFields, proc.dictio.FieldTypes, ix)
 
 			fmt.Println("------------------------------------------------------------------------------")
 			if err != nil {

@@ -23,12 +23,17 @@ type Table struct {
 type Dictionary struct {
 	Clusters []*Cluster `json:"clusters"`
 	Tables   []*Table   `json:"tables"`
+	TableFields map[string]string
+	FieldTypes map[string]string
 }
 
 
 func NewDictionary(root string) (*Dictionary, error) {
 
-	results := Dictionary{}
+	results := Dictionary{
+		TableFields: map[string]string{},
+		FieldTypes : map[string]string{},
+	}
 
 	b, err := os.ReadFile(root + "dictionary.json")
 	if err != nil {
@@ -62,7 +67,8 @@ func (*Dictionary) loadSchema(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func (dictio *Dictionary) ParseSchema(tableFields map[string]string, fieldTypes map[string]string, path string) error {
+func (dictio *Dictionary) ParseSchema(path string) error {
+
 	lines, err := dictio.loadSchema(path)
 	if err != nil {
 		return err
@@ -81,7 +87,7 @@ func (dictio *Dictionary) ParseSchema(tableFields map[string]string, fieldTypes 
 
 		if words[0] == "CREATE" {
 			if table != "" {
-				tableFields[table] = fieldlist
+				dictio.TableFields[table] = fieldlist
 			}
 			table = words[2]
 			fieldlist = ""
@@ -97,7 +103,7 @@ func (dictio *Dictionary) ParseSchema(tableFields map[string]string, fieldTypes 
 				fieldlist += w
 			}
 
-			fieldTypes[table+":"+w] = ftype
+			dictio.FieldTypes[table+":"+w] = ftype
 		}
 	}
 	return nil
