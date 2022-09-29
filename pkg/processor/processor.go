@@ -1,35 +1,33 @@
 package processor
 
 import (
+	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	dict "github.com/christiancadieux/kubequery-postgres/pkg/dictionary"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
-	"os/exec"
-	"encoding/json"
-	"context"
 )
 
 type Processor struct {
-	db *sql.DB
-	dictio *dict.Dictionary
-	root string
-	largeSize int
+	db          *sql.DB
+	dictio      *dict.Dictionary
+	root        string
+	largeSize   int
 	concurrency int
 }
 
-
-func NewProcessor(db *sql.DB, dictio *dict.Dictionary, root string, concurrency int) (*Processor, error){
+func NewProcessor(db *sql.DB, dictio *dict.Dictionary, root string, concurrency int) (*Processor, error) {
 	return &Processor{
-		db: db,
-		dictio: dictio,
-		root: root,
-		largeSize: 30000,
+		db:          db,
+		dictio:      dictio,
+		root:        root,
+		largeSize:   30000,
 		concurrency: concurrency,
-
 	}, nil
 }
 
@@ -68,7 +66,6 @@ func (proc *Processor) Run() error {
 	return nil
 }
 
-
 func (proc *Processor) ProcessCluster(cluster *dict.Cluster, tables []*dict.Table, tableFields map[string]string, fieldTypes map[string]string, ix int) (error, string) {
 
 	out := ""
@@ -94,7 +91,8 @@ func (proc *Processor) ProcessCluster(cluster *dict.Cluster, tables []*dict.Tabl
 }
 
 func (proc *Processor) ExtractData(cluster *dict.Cluster, table string, ix int) error {
-	cmd := exec.Command(proc.root + "runquery", table,
+
+	cmd := exec.Command(proc.root+"runquery", table,
 		cluster.Token,
 		cluster.Address,
 		cluster.FacName,
@@ -108,7 +106,7 @@ func (proc *Processor) ExtractData(cluster *dict.Cluster, table string, ix int) 
 
 }
 
-func (proc *Processor) processData( cluster *dict.Cluster, tableFields map[string]string, fieldTypes map[string]string, table string, ix int) (int, error, string) {
+func (proc *Processor) processData(cluster *dict.Cluster, tableFields map[string]string, fieldTypes map[string]string, table string, ix int) (int, error, string) {
 
 	out := ""
 	fieldlist := tableFields[table]
@@ -222,6 +220,3 @@ func (proc *Processor) processData( cluster *dict.Cluster, tableFields map[strin
 
 	return len(data), nil, out
 }
-
-
-

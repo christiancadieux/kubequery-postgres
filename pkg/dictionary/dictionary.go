@@ -2,9 +2,9 @@ package dictionary
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
-	"encoding/json"
 	"strings"
 )
 
@@ -19,20 +19,18 @@ type Table struct {
 	Name string `json:"name"`
 }
 
-
 type Dictionary struct {
-	Clusters []*Cluster `json:"clusters"`
-	Tables   []*Table   `json:"tables"`
+	Clusters    []*Cluster `json:"clusters"`
+	Tables      []*Table   `json:"tables"`
 	TableFields map[string]string
-	FieldTypes map[string]string
+	FieldTypes  map[string]string
 }
-
 
 func NewDictionary(root string) (*Dictionary, error) {
 
 	results := Dictionary{
 		TableFields: map[string]string{},
-		FieldTypes : map[string]string{},
+		FieldTypes:  map[string]string{},
 	}
 
 	b, err := os.ReadFile(root + "dictionary.json")

@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	dict "github.com/christiancadieux/kubequery-postgres/pkg/dictionary"
+	processor "github.com/christiancadieux/kubequery-postgres/pkg/processor"
 	_ "github.com/lib/pq"
 	"log"
 	"os"
 	"strconv"
 	"time"
-	dict "github.com/christiancadieux/kubequery-postgres/pkg/dictionary"
-	processor "github.com/christiancadieux/kubequery-postgres/pkg/processor"
 )
 
 const (
@@ -34,7 +34,6 @@ func getRoot() string {
 	path := os.Getenv("KQ_ROOT")
 	return path + "/"
 }
-
 
 func main() {
 	concurrency := flag.Int("c", CONCURRENCY, "concurrency")
@@ -73,7 +72,6 @@ func main() {
 	time.Sleep(2 * time.Second)
 
 	processor.Run()
-
 
 	fmt.Printf("Done. Duration=%v \n", time.Since(starttime))
 
