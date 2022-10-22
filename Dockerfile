@@ -1,4 +1,4 @@
-FROM uptycs/kubequery:kubequery.1.1.1.patch
+FROM uptycs/kubequery:kubequery.1.1.1-remote
 
 
 COPY database/schema_sqlite.sql /schema.sql
