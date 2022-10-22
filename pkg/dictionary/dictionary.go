@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 )
-
+// Clusters - information about each cluster in dictionary.json
 type Cluster struct {
 	Token      string `json:"token"`
 	Address    string `json:"address"`
@@ -19,6 +19,7 @@ type Table struct {
 	Name string `json:"name"`
 }
 
+// Dictionary - represent the information from dictionary.json
 type Dictionary struct {
 	Clusters    []*Cluster `json:"clusters"`
 	Tables      []*Table   `json:"tables"`
@@ -26,6 +27,7 @@ type Dictionary struct {
 	FieldTypes  map[string]string
 }
 
+// NewDictionary - create a Dictionary
 func NewDictionary(root string) (*Dictionary, error) {
 
 	results := Dictionary{
@@ -65,6 +67,7 @@ func (*Dictionary) loadSchema(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
+// ParseSchema - parse the sqlite schema into the TableFields and FieldTypes structs
 func (dictio *Dictionary) ParseSchema(path string) error {
 
 	lines, err := dictio.loadSchema(path)

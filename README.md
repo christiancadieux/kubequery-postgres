@@ -11,9 +11,9 @@ Postgres database using the same schema as kubequery.
 
 ## Features
 
-Kubequery is normally installed on specific clusters and used to make 'live' queries against the local kubernetes resources of that cluster using SQL.
+Kubequery is usually installed on specific clusters and used to make 'live' queries against the local kubernetes resources of that cluster using SQL.
 This is a different approach where this software and kubequery is installed on only one cluster(the aggregator) and polls other clusters(the targets) 
-using kubequery remote-access and save the data in a Postgres database. 
+using kubequery remote-access. The results are saved in a centralized Postgres database. 
 
 Benefits:
 
@@ -24,7 +24,7 @@ Benefits:
 - On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The Postgres tables are not virtual and can optimized to solve this problem.
 - Some of the kubequery schema columns like labels and annotations are TEXT but contain json information. These columns can be converted to Postgres JSONB for easy access.
 
-- Only the basic "select * from kubernetes_.." queries are executed by kubequery on the target clusters. All complex queries (JOINS, multi-cluster) are done on the Postgres database.
+- Only the basic "select * from kubernetes_.." queries are executed by kubequery on the target clusters during aggregation. All complex queries (JOINS, multi-cluster) are done on the Postgres database.
 - Note: For speed, the Postgres database should be located on the aggregator cluster.
 
 
@@ -48,26 +48,6 @@ export CLUSTER_IX=$6
 
 echo "select * from $TABLE;" | /opt/uptycs/bin/basequery  --flagfile=/opt/uptycs/etc/kubequery.flags  --config_path=/opt/uptycs/etc/kubequery.conf --extensions_socket=/opt/uptycs/var/kubequeryi.em$TABLE.$CLUSTER_IX  --extensions_autoload=/opt/uptycs/etc/autoload.exts  --extensions_require=kubequery  --extension_event_tables=kubernetes_events  --disable_database  --json  --disable_events=false  -S > /tmp/${CLUSTER_NAME}-$TABLE.json
 
-```
-
-## Additional fields (in progress)
-
-The loader has access to a dictionary that describes the clusters being monitored and the tables being accessed. 
-It is also possible to add extra fields that are not included in the sqlite schema but are include in the Postgres schema.
-These fields are application-specific and can be customized.
-
-For example, the clusters could be organized in 'regions' and the namespaces in 'teams'. It is possible to get these new columns using complex sql joins but for performance and ease of use, the Postgres tables can be denormalized and these columns added after their parent column. 
-
-Example:
-``` 
-# Original kubequery schema:
- cluster_name TEXT,
- cluster_id  TEXT,
-
-# Postgres schema:
-  cluster_name varchar(256),
-  region varchar(256),         <<< this field in added in the Postgres schema and included by the loader.
-  cluster_id varchar(256)
 ```
 
 
@@ -121,7 +101,7 @@ Time: 230.233 ms
 ## Sample Loader Run
 
 ```
-# concurrency =5
+# concurrency=5
 $ /loader -c 5 
 
 4 Cluster START testcluster-01 - https://testcluster-01:6443 
