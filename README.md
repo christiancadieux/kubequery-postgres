@@ -19,9 +19,9 @@ Benefits:
 
 - Allows to store kube resources from hundreds of clusters in a single Postgres database.
 - Allows to make almost real-time queries against hundreds of clusters since all the data is in the same Postgres database.
-- Index can be added to the PG database for improved access time. 
+- Index can be added to the PG database for improved access time. This is not available on the original sqlite virtual tables.
 - Polling the clusters and saving the results in the database is fast and can be done every 10 minutes if needed. Clusters can be polled in parallel for improved speed. 
-- On large clusters, SQL joins can be really slow against the sqlite database used by kubequery. The Postgres tables are not virtual and can optimized to solve this problem.
+- On large clusters, SQL joins can be really slow(hours) against the sqlite database used by kubequery. The Postgres tables are not virtual and can be optimized to solve this problem.
 - Some of the kubequery schema columns like labels and annotations are TEXT but contain json information. These columns can be converted to Postgres JSONB for easy access.
 
 - Only the basic "select * from kubernetes_.." queries are executed by kubequery on the target clusters during aggregation. All complex queries (JOINS, multi-cluster) are done on the Postgres database.
